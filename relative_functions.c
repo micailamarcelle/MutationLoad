@@ -21,7 +21,7 @@
 #include <tskit/core.h>
 #include <tskit/trees.h>
 
-double RunSimulationRel(int tskitstatus, bool isabsolute, bool ismodular, int elementsperlb, char * Nxtimestepsname, char * popsizename, char * delmutratename, char * chromsizename, char * chromnumname, char * mubname, char * Sbname, int typeofrun, int Nxtimesteps, int popsize, int chromosomesize, int numberofchromosomes, double deleteriousmutationrate, double beneficialmutationrate, double Sb, int beneficialdistribution, double Sd, int deleteriousdistribution, gsl_rng * randomnumbergeneratorforgamma, FILE *miscfilepointer, FILE *veryverbosefilepointer, int rawdatafilesize)
+double RunSimulationRel(int tskitstatus, bool isabsolute, bool ismodular, int elementsperlb, char * Nxtimestepsname, char * popsizename, char * delmutratename, char * chromsizename, char * chromnumname, char * mubname, char * Sbname, int typeofrun, int Nxtimesteps, int popsize, int chromosomesize, int numberofchromosomes, double deleteriousmutationrate, double beneficialmutationrate, double Sb, int beneficialdistribution, double Sd, int deleteriousdistribution, gsl_rng * randomnumbergeneratorforgamma, FILE *miscfilepointer, FILE *veryverbosefilepointer, int rawdatafilesize, double maxRateOfReaction, double michaelisConstant, int recessivityRunFlag)
 {
     if(isabsolute){
         fprintf(miscfilepointer, "\n Trying to use RunSimulationRel within an absolute fitness program. \n");
@@ -37,6 +37,11 @@ double RunSimulationRel(int tskitstatus, bool isabsolute, bool ismodular, int el
     FILE *mutationfilepointer;
     
     int i, j, k;
+
+    // EXPERIMENTATION FOR RECESSIVITY
+    //maxRateOfReaction = maxRateOfReaction;
+    //michaelisConstant = michaelisConstant;
+    //recessivityRunFlag = recessivityRunFlag;
     
     char * rawdatafilename = (char *) malloc(200);
     strcpy(rawdatafilename, "rawdatafor"); //starting the string that will be the name of the data file.
@@ -178,7 +183,7 @@ double RunSimulationRel(int tskitstatus, bool isabsolute, bool ismodular, int el
         //Following code performs N rounds of paired births and deaths.
         for (j = 0; j < popsize; j++) {
             currenttimestep += 1.0;            
-            PerformOneTimeStepRel(tskitstatus, isabsolute, isburninphaseover, ismodular, elementsperlb, &treesequencetablecollection, wholepopulationnodesarray, wholepopulationsitesarray, popsize, totaltimesteps, currenttimestep,wholepopulationwistree, wholepopulationwisarray, wholepopulationgenomes, psumofwis, chromosomesize, numberofchromosomes, totalindividualgenomelength, deleteriousmutationrate, beneficialmutationrate, Sb, beneficialdistribution, Sd, deleteriousdistribution, parent1gamete, parent2gamete, randomnumbergeneratorforgamma, miscfilepointer);  
+            PerformOneTimeStepRel(tskitstatus, isabsolute, isburninphaseover, ismodular, elementsperlb, &treesequencetablecollection, wholepopulationnodesarray, wholepopulationsitesarray, popsize, totaltimesteps, currenttimestep,wholepopulationwistree, wholepopulationwisarray, wholepopulationgenomes, psumofwis, chromosomesize, numberofchromosomes, totalindividualgenomelength, deleteriousmutationrate, beneficialmutationrate, Sb, beneficialdistribution, Sd, deleteriousdistribution, parent1gamete, parent2gamete, randomnumbergeneratorforgamma, miscfilepointer, maxRateOfReaction, michaelisConstant, recessivityRunFlag);  
         }
         
         //Following code calculates the variance in log(fitness) of the population after this generation of births and deaths.
@@ -187,11 +192,11 @@ double RunSimulationRel(int tskitstatus, bool isabsolute, bool ismodular, int el
         
 
         //This is the main data output, currently the summed fitness and variance in log(fitness) in the population.
-        //fprintf(rawdatafilepointer, "%d,%Lf,%.18f\n", i+1, *psumofwis, variancesum);
-        //fflush(rawdatafilepointer);
-
-        fprintf(rawdatafilepointer, "%d \n", i+1);
+        fprintf(rawdatafilepointer, "%d,%Lf,%.18f\n", i+1, *psumofwis, variancesum);
         fflush(rawdatafilepointer);
+
+        //fprintf(rawdatafilepointer, "%d \n", i+1);
+        //fflush(rawdatafilepointer);
 
         //Following code periodically simplifies the tree sequence tables, which requires the tables to be sorted each time.
         //The tskit API calls out sorting each time as inefficient, but they haven't yet uploaded an example of how to do it differently. The API currently suggests that they would use the C++ API, which I don't want to deal with.
@@ -400,7 +405,7 @@ double RunSimulationRel(int tskitstatus, bool isabsolute, bool ismodular, int el
     }
 }
 
-void PerformOneTimeStepRel(int tskitstatus, bool isabsolute, int isburninphaseover, bool ismodular, int elementsperlb, tsk_table_collection_t *treesequencetablecollection, tsk_id_t * wholepopulationnodesarray, tsk_id_t * wholepopulationsitesarray, int popsize, int totaltimesteps, double currenttimestep, long double *wholepopulationwistree, long double *wholepopulationwisarray, double *wholepopulationgenomes, long double * psumofwis, int chromosomesize, int numberofchromosomes, int totalindividualgenomelength, double deleteriousmutationrate, double beneficialmutationrate, double Sb, int beneficialdistribution, double Sd, int deleteriousdistribution, double *parent1gamete, double *parent2gamete, gsl_rng * randomnumbergeneratorforgamma, FILE *miscfilepointer)
+void PerformOneTimeStepRel(int tskitstatus, bool isabsolute, int isburninphaseover, bool ismodular, int elementsperlb, tsk_table_collection_t *treesequencetablecollection, tsk_id_t * wholepopulationnodesarray, tsk_id_t * wholepopulationsitesarray, int popsize, int totaltimesteps, double currenttimestep, long double *wholepopulationwistree, long double *wholepopulationwisarray, double *wholepopulationgenomes, long double * psumofwis, int chromosomesize, int numberofchromosomes, int totalindividualgenomelength, double deleteriousmutationrate, double beneficialmutationrate, double Sb, int beneficialdistribution, double Sd, int deleteriousdistribution, double *parent1gamete, double *parent2gamete, gsl_rng * randomnumbergeneratorforgamma, FILE *miscfilepointer, double maxRateOfReaction, double michaelisConstant, int recessivityRunFlag)
 {
     int currentparent1, currentparent2, currentvictim;
 
@@ -433,7 +438,7 @@ void PerformOneTimeStepRel(int tskitstatus, bool isabsolute, int isburninphaseov
     
     PerformDeath(isabsolute, tskitstatus, isburninphaseover, popsize, pPopSize, currentvictim, deleteriousdistribution, wholepopulationwistree, wholepopulationwisarray, wholepopulationdeathratesarray, wholepopulationindex, wholepopulationisfree, psumofwis, pInverseSumOfWis, pInverseSumOfWissquared, b_0, r, i_init, s, psumofload, psumofloadsquared, wholepopulationnodesarray, miscfilepointer);
     
-    PerformBirth(tskitstatus, isburninphaseover, ismodular, elementsperlb, treesequencetablecollection, wholepopulationnodesarray, childnode1, childnode2, isabsolute, parent1gamete, parent2gamete, popsize, pPopSize, currentvictim, wholepopulationgenomes, totalindividualgenomelength, deleteriousdistribution, wholepopulationwistree, wholepopulationwisarray, wholepopulationdeathratesarray,wholepopulationindex, wholepopulationisfree, psumofwis, pInverseSumOfWis, pInverseSumOfWissquared, b_0, r, i_init, s, psumofload, psumofloadsquared, miscfilepointer);
+    PerformBirth(tskitstatus, isburninphaseover, ismodular, elementsperlb, treesequencetablecollection, wholepopulationnodesarray, childnode1, childnode2, isabsolute, parent1gamete, parent2gamete, popsize, pPopSize, currentvictim, wholepopulationgenomes, totalindividualgenomelength, deleteriousdistribution, wholepopulationwistree, wholepopulationwisarray, wholepopulationdeathratesarray,wholepopulationindex, wholepopulationisfree, psumofwis, pInverseSumOfWis, pInverseSumOfWissquared, b_0, r, i_init, s, psumofload, psumofloadsquared, miscfilepointer, maxRateOfReaction, michaelisConstant, recessivityRunFlag);
     
 }
 
@@ -510,7 +515,8 @@ int ChooseParentWithTree(long double *wholepopulationwistree, int popsize, long 
     return newparent;
 }
 
-double CalculateWi(double *parent1gamete, double *parent2gamete, int totalindividualgenomelength)
+// Method for calculating Wi without recessivity
+double CalculateWiNoRecessivity(double *parent1gamete, double *parent2gamete, int totalindividualgenomelength)
 {
     double newwi = 0.0;
     long double currentlinkageblockssum = 0.0;
@@ -523,3 +529,47 @@ double CalculateWi(double *parent1gamete, double *parent2gamete, int totalindivi
     newwi = exp(currentlinkageblockssum);
     return newwi;
 }
+
+// Method for calculating Wi with recessivity
+double CalculateWiWithRecessivity(double *parent1gamete, double *parent2gamete, int totalindividualgenomelength, double maxRateOfReaction, double michaelisConstant) {
+    // Initializes the new fitness contribution value
+    double newWiFitnessContribution = 0.0;
+    long double currentFitnessContributionLogSum = 0.0;
+    double FindFitnessContribution(double linkageBlockActivity, double maxRateOfReaction, double michaelisConstant);
+
+    // Loops through the given linkage block array
+    int loopIndex;
+    for (loopIndex = 0; loopIndex < (totalindividualgenomelength/2); loopIndex++) {
+        // Gets the current log values for linkage block fitness and exponentiates to get linkage block activity
+        // Then, plugs these values into FindFitnessContribution, takes the log, and adds to our sum
+        currentFitnessContributionLogSum += log(FindFitnessContribution(exp(parent1gamete[loopIndex]) + exp(parent2gamete[loopIndex]), maxRateOfReaction, michaelisConstant));
+    }
+
+    // Exponentiates the sum of all of the log fitness contributions to get the new Wi
+    newWiFitnessContribution = exp(currentFitnessContributionLogSum);
+
+    // Returns this value
+    return(newWiFitnessContribution);
+
+}
+
+// Helper method for calculating the expected fitness contribution for a pair of linkage blocks
+double FindFitnessContribution(double linkageBlockActivity, double maxRateOfReaction, double michaelisConstant) {
+    // Returns linkage block activity times Vmax, divided by (Km + linkage block activity)
+    return((linkageBlockActivity * maxRateOfReaction)/(michaelisConstant + linkageBlockActivity));
+}
+
+// Wrapper method for calculating Wi. Based on the value of the recessivity flag (with 0 indicating
+// a run not including recessivity and 1 indicating a run including recessivity), calculates
+// and returns the new value of Wi, either with or without recessivity
+double CalculateWi(double *parent1gamete, double *parent2gamete, int totalindividualgenomelength, double maxRateOfReaction, double michaelisConstant, int recessivityRunFlag) {
+    double CalculateWiWithRecessivity(double *parent1gamete, double *parent2gamete, int totalindividualgenomelength, double maxRateOfReaction, double michaelisConstant);
+    double CalculateWiNoRecessivity(double *parent1gamete, double *parent2gamete, int totalindividualgenomelength);
+
+    if (recessivityRunFlag == 0) {
+        return(CalculateWiNoRecessivity(parent1gamete, parent2gamete, totalindividualgenomelength));
+    } else {
+        return(CalculateWiWithRecessivity(parent1gamete, parent2gamete, totalindividualgenomelength, maxRateOfReaction, michaelisConstant));
+    }
+}
+
