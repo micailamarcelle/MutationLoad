@@ -34,3 +34,4 @@ void PerformBirth(int tskitstatus, int isburninphaseover, bool ismodular, int el
 
 #endif // SHAREFUNC_FLAG_H_INCLUDED
 
+
