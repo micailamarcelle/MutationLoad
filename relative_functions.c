@@ -124,7 +124,7 @@ double RunSimulationRel(int tskitstatus, bool isabsolute, bool ismodular, int el
         fflush(veryverbosefilepointer);
     }
     
-    InitializePopulationRel(tskitstatus, &treesequencetablecollection, wholepopulationnodesarray, wholepopulationsitesarray, wholepopulationwistree, wholepopulationwisarray, popsize, wholepopulationgenomes, totalpopulationgenomelength, totaltimesteps, psumofwis, initializationValRel);
+    InitializePopulationRel(tskitstatus, &treesequencetablecollection, wholepopulationnodesarray, wholepopulationsitesarray, wholepopulationwistree, wholepopulationwisarray, popsize, wholepopulationgenomes, totalpopulationgenomelength, totaltimesteps, psumofwis, initializationValRel, maxRateOfReaction, michaelisConstant, chromosomesize);
     
     /*Sets the initial population to have zeroes in all their linkage blocks,
     death rates equal to the baseline wi, and an identifier number.
@@ -437,15 +437,17 @@ void PerformOneTimeStepRel(int tskitstatus, bool isabsolute, int isburninphaseov
     
 }
 
-void InitializePopulationRel(int tskitstatus, tsk_table_collection_t * treesequencetablecollection, tsk_id_t * wholepopulationnodesarray, tsk_id_t * wholepopulationsitesarray, long double *wholepopulationwistree, long double *wholepopulationwisarray, int popsize, double *wholepopulationgenomes, int totalpopulationgenomelength, int totaltimesteps, long double * psumofwis, double initializationValRel) 
+void InitializePopulationRel(int tskitstatus, tsk_table_collection_t * treesequencetablecollection, tsk_id_t * wholepopulationnodesarray, tsk_id_t * wholepopulationsitesarray, long double *wholepopulationwistree, long double *wholepopulationwisarray, int popsize, double *wholepopulationgenomes, int totalpopulationgenomelength, int totaltimesteps, long double * psumofwis, double initializationValRel, double maxRateOfReaction, double michaelisConstant, int chromosomeSize) 
 {
     int i, j;
     
     double haploidgenomelength = (double) ((totalpopulationgenomelength / popsize) / 2);
-    
+
+    // Individuals begin with a fitness calculated using initializationValRel
+    double nonExp = ((2.0 * initializationValRel * maxRateOfReaction) / (michaelisConstant + (2.0 * initializationValRel)));
     for (i = 0; i < popsize; i++){
-        wholepopulationwistree[i] = initializationValRel; //all individuals start with load 1 (probability of being chosen to produce an offspring or to die of 1/N). 
-        wholepopulationwisarray[i] = initializationValRel;
+        wholepopulationwistree[i] = pow(nonExp, chromosomeSize); //all individuals start with load 1 (probability of being chosen to produce an offspring or to die of 1/N). 
+        wholepopulationwisarray[i] = pow(nonExp, chromosomeSize);
     }
     //this for loop taken from the Fen_init function in sample implementation from 'Fenwick tree' Wikipedia page.
     for (i = 0; i < popsize; i++) {
@@ -458,7 +460,7 @@ void InitializePopulationRel(int tskitstatus, tsk_table_collection_t * treeseque
     *psumofwis = (long double)popsize;
     
     for (i = 0; i < totalpopulationgenomelength; i++){
-        wholepopulationgenomes[i] = 0.0;
+        wholepopulationgenomes[i] = initializationValRel;
     }
     //The following lines initialize the node table for tree sequence recording.
     //Note that nodes here are single sets of chromosomes, so the 2x popsize here assumes diploidy.
