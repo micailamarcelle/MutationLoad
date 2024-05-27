@@ -124,7 +124,7 @@ double RunSimulationRel(int tskitstatus, bool isabsolute, bool ismodular, int el
         fflush(veryverbosefilepointer);
     }
     
-    InitializePopulationRel(tskitstatus, &treesequencetablecollection, wholepopulationnodesarray, wholepopulationsitesarray, wholepopulationwistree, wholepopulationwisarray, popsize, wholepopulationgenomes, totalpopulationgenomelength, totaltimesteps, psumofwis, initializationValRel, maxRateOfReaction, michaelisConstant, chromosomesize, recessivityRunFlag);
+    InitializePopulationRel(tskitstatus, &treesequencetablecollection, wholepopulationnodesarray, wholepopulationsitesarray, wholepopulationwistree, wholepopulationwisarray, popsize, wholepopulationgenomes, totalpopulationgenomelength, totaltimesteps, psumofwis, initializationValRel, maxRateOfReaction, michaelisConstant, chromosomesize, recessivityRunFlag, numberofchromosomes);
     
     /*Sets the initial population to have zeroes in all their linkage blocks,
     death rates equal to the baseline wi, and an identifier number.
@@ -437,7 +437,7 @@ void PerformOneTimeStepRel(int tskitstatus, bool isabsolute, int isburninphaseov
     
 }
 
-void InitializePopulationRel(int tskitstatus, tsk_table_collection_t * treesequencetablecollection, tsk_id_t * wholepopulationnodesarray, tsk_id_t * wholepopulationsitesarray, long double *wholepopulationwistree, long double *wholepopulationwisarray, int popsize, double *wholepopulationgenomes, int totalpopulationgenomelength, int totaltimesteps, long double * psumofwis, double initializationValRel, double maxRateOfReaction, double michaelisConstant, int chromosomeSize, int recessivityRunFlag) 
+void InitializePopulationRel(int tskitstatus, tsk_table_collection_t * treesequencetablecollection, tsk_id_t * wholepopulationnodesarray, tsk_id_t * wholepopulationsitesarray, long double *wholepopulationwistree, long double *wholepopulationwisarray, int popsize, double *wholepopulationgenomes, int totalpopulationgenomelength, int totaltimesteps, long double * psumofwis, double initializationValRel, double maxRateOfReaction, double michaelisConstant, int chromosomeSize, int recessivityRunFlag, int numberOfChromosomes) 
 {
     int i, j;
     
@@ -447,8 +447,8 @@ void InitializePopulationRel(int tskitstatus, tsk_table_collection_t * treeseque
         if (recessivityRunFlag == 1) {
             // Recessivity- individuals begin with a fitness calculated using initializationValRel
             double nonExp = ((2.0 * initializationValRel * maxRateOfReaction) / (michaelisConstant + (2.0 * initializationValRel)));
-            wholepopulationwistree[i] = pow(nonExp, chromosomeSize); 
-            wholepopulationwisarray[i] = pow(nonExp, chromosomeSize);
+            wholepopulationwistree[i] = pow(nonExp, chromosomeSize * numberOfChromosomes); 
+            wholepopulationwisarray[i] = pow(nonExp, chromosomeSize * numberOfChromosomes);
         } else {
             // Non-recessivity case
             wholepopulationwistree[i] = 1.0; //all individuals start with load 1 (probability of being chosen to produce an offspring or to die of 1/N). 
@@ -462,8 +462,13 @@ void InitializePopulationRel(int tskitstatus, tsk_table_collection_t * treeseque
             wholepopulationwistree[j] += wholepopulationwistree[i];
         }
     }
-    
-    *psumofwis = (long double)popsize;
+
+    // Initializes the sum of wis with cases for recessivity and no recessivity
+    if (recessivityRunFlag == 1) {
+        *psumofwis = pow(nonExp, chromosomeSize * numberOfChromosomes) * ((long double) popsize);
+    } else {
+        *psumofwis = (long double)popsize;
+    }
     
     for (i = 0; i < totalpopulationgenomelength; i++){
         if (recessivityRunFlag == 1) {
