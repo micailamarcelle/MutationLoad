@@ -142,7 +142,7 @@ int main(int argc, char *argv[]) {
     //it's a bit inelegant to have two different RNGs, which could be solved by using a different algorithm 
     //for choosing variates from a gamma distribution, instead of using the free one from gsl.
     
-    char * directoryname = MakeDirectoryName(tskitstatusname, deldistname, isabsolutename, isabsolute, bendistname, beneficialmutationratename, numberofchromosomesname, chromosomesizename, popsizename, deleteriousmutationratename, randomnumberseedname, Kname, rname, i_initname, sname, ismodular, elementsperlbname, iscalcfixationname, typeofrun, Sb2name, maxRateOfReaction, michaelisConstant, recessivityRunFlag, initializationValRel);// this will create the directory name pointer using input parameter values
+    char * directoryname = MakeDirectoryName(tskitstatusname, deldistname, isabsolutename, isabsolute, bendistname, beneficialmutationratename, numberofchromosomesname, chromosomesizename, popsizename, deleteriousmutationratename, randomnumberseedname, Kname, rname, i_initname, sname, ismodular, elementsperlbname, iscalcfixationname, typeofrun, Sb2name, maxRateOfReaction, michaelisConstant, recessivityRunFlag, initializationValRel, SdtoSbratio);// this will create the directory name pointer using input parameter values
     
     mkdir(directoryname, 0777);//create the directory with the directory name pointer
     chdir(directoryname);//move into the created directory
@@ -792,7 +792,7 @@ double BisectionMethodToFindSbWithZeroSlope(int tskitstatus, bool isabsolute, bo
     return 0.0;
     
 }
-char * MakeDirectoryName(char * tskitstatus, char* deldist, char * isabsolutename, bool isabsolute, char * bendist, char * benmut, char * numberofchromosomes, char * chromosomesize, char * popsize, char * delmut, char * randomnumberseed, char * K, char * r, char *i_init, char * s, bool ismodular, char *elementsperlb, char *iscalcfixationname, int typeofrun, char * Sbname, double maxRateOfReaction, double michaelisConstant, int recessivityRunFlag, double initializationValRel) 
+char * MakeDirectoryName(char * tskitstatus, char* deldist, char * isabsolutename, bool isabsolute, char * bendist, char * benmut, char * numberofchromosomes, char * chromosomesize, char * popsize, char * delmut, char * randomnumberseed, char * K, char * r, char *i_init, char * s, bool ismodular, char *elementsperlb, char *iscalcfixationname, int typeofrun, char * Sbname, double maxRateOfReaction, double michaelisConstant, int recessivityRunFlag, double initializationValRel, double SdtoSbRatio) 
 {
 	
 	char * directoryname = (char *) malloc(400);
@@ -849,6 +849,9 @@ char * MakeDirectoryName(char * tskitstatus, char* deldist, char * isabsolutenam
     strcat(directoryname, buffer);
     strcat(directoryname, "_a0_");
     gcvt(initializationValRel, 6, buffer);
+    strcat(directoryname, buffer);
+    strcat(directoryname, "_sdTosb_");
+    gcvt(SdtoSbRatio, 6, buffer);
     strcat(directoryname, buffer);
 
 	return directoryname;
