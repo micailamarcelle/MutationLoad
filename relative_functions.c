@@ -447,8 +447,8 @@ void InitializePopulationRel(int tskitstatus, tsk_table_collection_t * treeseque
         if (recessivityRunFlag == 1) {
             // Recessivity- individuals begin with a fitness calculated using initializationValRel
             double nonExp = ((2.0 * initializationValRel * maxRateOfReaction) / (michaelisConstant + (2.0 * initializationValRel)));
-            wholepopulationwistree[i] = pow(nonExp, chromosomeSize * numberOfChromosomes); 
-            wholepopulationwisarray[i] = pow(nonExp, chromosomeSize * numberOfChromosomes);
+            wholepopulationwistree[i] = pow(nonExp, chromosomeSize * numberOfChromosomes * 2); 
+            wholepopulationwisarray[i] = pow(nonExp, chromosomeSize * numberOfChromosomes * 2);
         } else {
             // Non-recessivity case
             wholepopulationwistree[i] = 1.0; //all individuals start with load 1 (probability of being chosen to produce an offspring or to die of 1/N). 
@@ -465,7 +465,7 @@ void InitializePopulationRel(int tskitstatus, tsk_table_collection_t * treeseque
 
     // Initializes the sum of wis with cases for recessivity and no recessivity
     if (recessivityRunFlag == 1) {
-        *psumofwis = pow(nonExp, chromosomeSize * numberOfChromosomes) * ((long double) popsize);
+        *psumofwis = pow(nonExp, chromosomeSize * numberOfChromosomes * 2) * ((long double) popsize);
     } else {
         *psumofwis = (long double)popsize;
     }
