@@ -443,17 +443,14 @@ void InitializePopulationRel(int tskitstatus, tsk_table_collection_t * treeseque
     
     double haploidgenomelength = (double) ((totalpopulationgenomelength / popsize) / 2);
 
+    // To limit computational issues for small a0's, we multiply by 1/W(no mutations) each time
+    // fitness is calculated to effectively "normalize" values while maintaining relative relationships
+    // In this case, to avoid unnecessary computation, all wis are simply initialized to 1.0
     for (i = 0; i < popsize; i++){
-        if (recessivityRunFlag == 1) {
-            // Recessivity- individuals begin with a fitness calculated using initializationValRel
-            double nonExp = ((2.0 * initializationValRel * maxRateOfReaction) / (michaelisConstant + (2.0 * initializationValRel)));
-            wholepopulationwistree[i] = pow(nonExp, chromosomeSize * numberOfChromosomes * 2); 
-            wholepopulationwisarray[i] = pow(nonExp, chromosomeSize * numberOfChromosomes * 2);
-        } else {
-            // Non-recessivity case
-            wholepopulationwistree[i] = 1.0; //all individuals start with load 1 (probability of being chosen to produce an offspring or to die of 1/N). 
+            // Note that, due to normalization, whether or not we have recessivity turned on, all
+            // individuals are initialized as mutationless with a wi of 1.0
+            wholepopulationwistree[i] = 1.0;
             wholepopulationwisarray[i] = 1.0;
-        }
     }
     //this for loop taken from the Fen_init function in sample implementation from 'Fenwick tree' Wikipedia page.
     for (i = 0; i < popsize; i++) {
@@ -463,12 +460,9 @@ void InitializePopulationRel(int tskitstatus, tsk_table_collection_t * treeseque
         }
     }
 
-    // Initializes the sum of wis with cases for recessivity and no recessivity
-    if (recessivityRunFlag == 1) {
-        *psumofwis = pow(nonExp, chromosomeSize * numberOfChromosomes * 2) * ((long double) popsize);
-    } else {
-        *psumofwis = (long double)popsize;
-    }
+    // Again, due to normalization, whether or not recessivity is turned on, all individuals
+    // are initialized with a wi of 1.0
+    *psumofwis = (long double)popsize;
     
     for (i = 0; i < totalpopulationgenomelength; i++){
         if (recessivityRunFlag == 1) {
