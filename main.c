@@ -850,9 +850,6 @@ char * MakeDirectoryName(char * tskitstatus, char* deldist, char * isabsolutenam
     strcat(directoryname, "_a0_");
     gcvt(initializationValRel, 6, buffer);
     strcat(directoryname, buffer);
-    strcat(directoryname, "_sdTosb_");
-    gcvt(SdtoSbRatio, 6, buffer);
-    strcat(directoryname, buffer);
 
 	return directoryname;
 }
