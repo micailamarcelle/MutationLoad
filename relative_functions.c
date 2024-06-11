@@ -569,8 +569,8 @@ double CalculateWiWithRecessivity(double *parent1gamete, double *parent2gamete, 
     newWiFitnessContribution = exp(currentFitnessContributionLogSum);
 
     // Multiplies this by 1/W(no mutations) to normalize wi
-    // Note that totalindividualgenomelength represents the total number of linkage blocks
-    newWiFitnessContribution = pow(nonExp, -totalindividualgenomelength) * newWiFitnessContribution;
+    // Note that the exponent represents chromosomesize * numberofchromosomes
+    newWiFitnessContribution = pow(nonExp, -(totalindividualgenomelength / 2)) * newWiFitnessContribution;
 
     // Returns this value
     return(newWiFitnessContribution);
