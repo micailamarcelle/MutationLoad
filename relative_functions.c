@@ -128,7 +128,9 @@ double RunSimulationRel(int tskitstatus, bool isabsolute, bool ismodular, int el
     
     /*Sets the initial population to have zeroes in all their linkage blocks,
     death rates equal to the baseline wi, and an identifier number.
-    It also sums the wis and returns the sum.*/
+    It also sums the wis and returns the sum. Note that, if a run with recessivity
+    is being performed, then gene activities are initialized to the log of the 
+    a0 value given at the command line, rather than necessarily being 0*/
     
     if (VERYVERBOSE == 1) {
         fprintf(veryverbosefilepointer, "Population initialized.\n");
