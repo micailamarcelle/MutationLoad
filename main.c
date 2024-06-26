@@ -30,9 +30,9 @@
 
 int main(int argc, char *argv[]) {
 
-    // Recessivity adjustment: changed argc to 30 to account for additional command line arguments
-    if (argc != 31) {
-        printf("[Error]; Wrong number of arguments in program. usage: timeSteps; initialPopsize; genome-wide deleterious mutation rate; chromosome size; number of chromosomes; beneficial/deleterious mutation ratio; Sb; beneficial distribution; type of run; slope; seed; MaxPopSize; relative or absolute; epistasis r; i_init; deltad_0; tskit status; without modular epistasis or with it; elements per linkage block; snapshot; snapshot file name; deleterious/beneficial s ratio; point or exponential deleterious distribution; size of raw data file; reduction in MaxPopSize; Fixation Calculation status; maxRateOfReaction; michaelisConstant; recessivityRunFlag; initializationValRel \n");
+    // Recessivity adjustment: changed argc to 32 to account for additional command line arguments
+    if (argc != 32) {
+        printf("[Error]; Wrong number of arguments in program. usage: timeSteps; initialPopsize; genome-wide deleterious mutation rate; chromosome size; number of chromosomes; beneficial/deleterious mutation ratio; Sb; beneficial distribution; type of run; slope; seed; MaxPopSize; relative or absolute; epistasis r; i_init; deltad_0; tskit status; without modular epistasis or with it; elements per linkage block; snapshot; snapshot file name; deleterious/beneficial s ratio; point or exponential deleterious distribution; size of raw data file; reduction in MaxPopSize; Fixation Calculation status; maxRateOfReaction; michaelisConstant; recessivityRunFlag; initializationValRel; addNonNeutral \n");
         return -1;
     }
     //declare the file pointers for the files used for printing across the program
@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
     FILE *finaldatafilepointer;
     FILE *veryverbosefilepointer;
     
-    int Nxtimesteps, popsize, chromosomesize, numberofchromosomes, beneficialdistribution, typeofrun, randomnumberseed, K, relorabs, i_init, tskitstatus, nonmodormod, elementsperlb, snapshot, deleteriousdistribution, rawdatafilesize, calcfixation, recessivityRunFlag;
+    int Nxtimesteps, popsize, chromosomesize, numberofchromosomes, beneficialdistribution, typeofrun, randomnumberseed, K, relorabs, i_init, tskitstatus, nonmodormod, elementsperlb, snapshot, deleteriousdistribution, rawdatafilesize, calcfixation, recessivityRunFlag, addNonNeutral;
 	double deleteriousmutationrate, bentodelmutrate, Sbtemp, slopeforcontourline, r, s, SdtoSbratio, redinmaxpopsize, maxRateOfReaction, michaelisConstant, initializationValRel;
 
 	char *Nxtimestepsname, *popsizename, *deleteriousmutationratename, *chromosomesizename, *numberofchromosomesname, *slopeforcontourlinename, *randomnumberseedname, *Kname, *rname, *i_initname, *sname, *elementsperlbname, *prevsnapshotfilename, *SdtoSbrationame, *redinmaxpopsizename, *iscalcfixationname;
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
     iscalcfixationname = (char *)malloc(30);
 
     int wrong_args;
-	wrong_args = AssignArgumentstoVar(argv, &Nxtimesteps, Nxtimestepsname, &popsize, popsizename, &deleteriousmutationrate, deleteriousmutationratename, &chromosomesize, chromosomesizename, &numberofchromosomes, numberofchromosomesname, &bentodelmutrate, &Sbtemp, &beneficialdistribution, &typeofrun, &slopeforcontourline, slopeforcontourlinename, &randomnumberseed, randomnumberseedname, &K, Kname, &relorabs, &r, rname, &i_init, i_initname, &s, sname, &tskitstatus, &nonmodormod, &elementsperlb, elementsperlbname, &snapshot, prevsnapshotfilename, &SdtoSbratio, SdtoSbrationame, &deleteriousdistribution, &rawdatafilesize, &redinmaxpopsize, redinmaxpopsizename, &calcfixation, &maxRateOfReaction, &michaelisConstant, &recessivityRunFlag, &initializationValRel);
+	wrong_args = AssignArgumentstoVar(argv, &Nxtimesteps, Nxtimestepsname, &popsize, popsizename, &deleteriousmutationrate, deleteriousmutationratename, &chromosomesize, chromosomesizename, &numberofchromosomes, numberofchromosomesname, &bentodelmutrate, &Sbtemp, &beneficialdistribution, &typeofrun, &slopeforcontourline, slopeforcontourlinename, &randomnumberseed, randomnumberseedname, &K, Kname, &relorabs, &r, rname, &i_init, i_initname, &s, sname, &tskitstatus, &nonmodormod, &elementsperlb, elementsperlbname, &snapshot, prevsnapshotfilename, &SdtoSbratio, SdtoSbrationame, &deleteriousdistribution, &rawdatafilesize, &redinmaxpopsize, redinmaxpopsizename, &calcfixation, &maxRateOfReaction, &michaelisConstant, &recessivityRunFlag, &initializationValRel, &addNonNeutral);
 
     if(wrong_args == -1){
 		return -1;
@@ -916,7 +916,7 @@ char * MakePopSnapshotFileName(char * mubname, char * Sbname)
     return popsnapshotfilename;
 }
 
-int AssignArgumentstoVar(char **argv, int *Nxtimesteps, char *Nxtimestepsname, int *popsize, char *popsizename, double *deleteriousmutationrate, char *deleteriousmutationratename, int *chromosomesize, char *chromosomesizename, int *numberofchromosomes, char *numberofchromosomesname, double *bentodelmutrate, double *Sbtemp, int *beneficialdistribution, int *typeofrun, double *slopeforcontourline, char *slopeforcontourlinename, int *randomnumberseed, char *randomnumberseedname, int *K, char *Kname, int *relorabs, double *r, char *rname, int *i_init, char *i_initname, double *s, char *sname, int *tskitstatus, int *nonmodormod, int *elementsperlb, char *elementsperlbname, int *snapshot, char *prevsnapshotfilename, double *SdtoSbratio, char *SdtoSbrationame, int *deleteriousdistribution, int *rawdatafilesize, double *redinmaxpopsize, char *redinmaxpopsizename, int *calcfixation, double *maxRateOfReaction, double *michaelisConstant, int *recessivityRunFlag, double *initializationValRel) {
+int AssignArgumentstoVar(char **argv, int *Nxtimesteps, char *Nxtimestepsname, int *popsize, char *popsizename, double *deleteriousmutationrate, char *deleteriousmutationratename, int *chromosomesize, char *chromosomesizename, int *numberofchromosomes, char *numberofchromosomesname, double *bentodelmutrate, double *Sbtemp, int *beneficialdistribution, int *typeofrun, double *slopeforcontourline, char *slopeforcontourlinename, int *randomnumberseed, char *randomnumberseedname, int *K, char *Kname, int *relorabs, double *r, char *rname, int *i_init, char *i_initname, double *s, char *sname, int *tskitstatus, int *nonmodormod, int *elementsperlb, char *elementsperlbname, int *snapshot, char *prevsnapshotfilename, double *SdtoSbratio, char *SdtoSbrationame, int *deleteriousdistribution, int *rawdatafilesize, double *redinmaxpopsize, char *redinmaxpopsizename, int *calcfixation, double *maxRateOfReaction, double *michaelisConstant, int *recessivityRunFlag, double *initializationValRel, int *addNonNeutral) {
 	//whicharg is used for simplification in future modifications at the order of the arguments in the code
 	int whicharg;
 	whicharg=1;
@@ -1023,6 +1023,9 @@ int AssignArgumentstoVar(char **argv, int *Nxtimesteps, char *Nxtimestepsname, i
     whicharg = 30;
     // represents the value that individuals in the population will be initialized to within a relative run
     *initializationValRel = atof(argv[whicharg]);
+    whicharg = 31;
+    // determines whether non neutral mutations will be tracked with tskit
+    *addNonNeutral = atoi(argv[whicharg]);
 
 	if (*beneficialdistribution > 2) {
 		printf("[Error] 8th argument (beneficial distribution) must be 0 (point), 1 (exponential) or 2 (uniform). However, by the moment only point mutations are tested for mutaway code \n");
