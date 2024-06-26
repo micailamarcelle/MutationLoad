@@ -189,8 +189,13 @@ double RunSimulationRel(int tskitstatus, bool isabsolute, bool ismodular, int el
         
 
         //This is the main data output, currently the summed fitness and variance in log(fitness) in the population.
-        fprintf(rawdatafilepointer, "%d,%Lf,%.18f\n", i+1, *psumofwis, variancesum);
-        fflush(rawdatafilepointer);
+        // Note that data is only written to the raw data file when i is a multiple of the WRITEFREQUENCY
+        // global variable in order to limit runtimes. The final generation is also always written to ensure that
+        // the final state is consistently known.
+        if (i % WRITEFREQUENCY == 0 || i == Nxtimesteps - 1) {
+            fprintf(rawdatafilepointer, "%d,%Lf,%.18f\n", i+1, *psumofwis, variancesum);
+            fflush(rawdatafilepointer);
+        }
 
         //fprintf(rawdatafilepointer, "%d \n", i+1);
         //fflush(rawdatafilepointer);
