@@ -556,7 +556,7 @@ void RecombineChromosomesIntoGamete(bool isabsolute, int tskitstatus, bool ismod
     }
 }
 
-bool ProduceMutatedGamete(int tskitstatus, int isburninphaseover, tsk_table_collection_t *treesequencetablecollection, tsk_id_t * wholepopulationnodesarray, tsk_id_t * wholepopulationsitesarray, tsk_id_t * childnode, int totaltimesteps, double currenttimestep, int parent, bool isabsolute, int individualgenomelength, double deleteriousmutationrate, double beneficialmutationrate, double Sb, int beneficialdistribution, double Sd, int deleteriousdistribution, double *gamete, gsl_rng * randomnumbergeneratorforgamma, FILE *miscfilepointer)
+bool ProduceMutatedGamete(int tskitstatus, int isburninphaseover, tsk_table_collection_t *treesequencetablecollection, tsk_id_t * wholepopulationnodesarray, tsk_id_t * wholepopulationsitesarray, tsk_id_t * childnode, int totaltimesteps, double currenttimestep, int parent, bool isabsolute, int individualgenomelength, double deleteriousmutationrate, double beneficialmutationrate, double Sb, int beneficialdistribution, double Sd, int deleteriousdistribution, double *gamete, gsl_rng * randomnumbergeneratorforgamma, FILE *miscfilepointer, int addNonNeutral)
 {
     int k, numberofbeneficialmutations, numberofdeleteriousmutations;
     double generatedSb;
@@ -597,10 +597,10 @@ bool ProduceMutatedGamete(int tskitstatus, int isburninphaseover, tsk_table_coll
     //Mutation effect sign depends on fitness scheme, for absolute fitness the sign of the deleterious mutation effect is positive while for relative fitness the sign is negative
     for (k = 0; k < numberofdeleteriousmutations; k++) {
         if (isabsolute){
-            MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, Sds[k]);
+            MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, Sds[k], addNonNeutral);
         }
         else{
-            MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, -Sds[k]);
+            MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, -Sds[k], addNonNeutral);
         }
     }
     
@@ -613,10 +613,10 @@ bool ProduceMutatedGamete(int tskitstatus, int isburninphaseover, tsk_table_coll
     if (beneficialdistribution == 0) {
         for (k = 0; k < numberofbeneficialmutations; k++) {
             if (isabsolute){
-                MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, -Sb);
+                MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, -Sb, addNonNeutral);
             }
             else{
-                MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, Sb);
+                MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, Sb, addNonNeutral);
             }
         }
     //exponential distribution
@@ -624,10 +624,10 @@ bool ProduceMutatedGamete(int tskitstatus, int isburninphaseover, tsk_table_coll
         for (k = 0; k < numberofbeneficialmutations; k++) {
             generatedSb = gsl_ran_exponential(randomnumbergeneratorforgamma, Sb);
             if (isabsolute){
-                MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, -generatedSb);
+                MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, -generatedSb, addNonNeutral);
             }
             else{
-                MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, generatedSb);
+                MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, generatedSb, addNonNeutral);
             }
         }
     //uniform distribution
@@ -636,10 +636,10 @@ bool ProduceMutatedGamete(int tskitstatus, int isburninphaseover, tsk_table_coll
             double upperlimitforuniform = (2 * Sb);
             generatedSb = gsl_ran_flat(randomnumbergeneratorforgamma, 0, upperlimitforuniform);
             if (isabsolute){
-                MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, -generatedSb);
+                MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, -generatedSb, addNonNeutral);
             }
             else{
-                MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, generatedSb);
+                MutateGamete(tskitstatus, isburninphaseover, treesequencetablecollection, wholepopulationsitesarray, *childnode, totaltimesteps, currenttimestep, isabsolute, individualgenomelength, gamete, generatedSb, addNonNeutral);
             }
         }
     } else {
