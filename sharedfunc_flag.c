@@ -22,7 +22,7 @@
 #include <tskit/core.h>
 #include <tskit/trees.h>
 
-void MutateGamete(int tskitstatus, int isburninphaseover,  tsk_table_collection_t * treesequencetablecollection, tsk_id_t * wholepopulationsitesarray, tsk_id_t childnode, int totaltimesteps, double currenttimestep, bool isabsolute, int totalindividualgenomelength, double *gamete, double mutationeffectsize)
+void MutateGamete(int tskitstatus, int isburninphaseover,  tsk_table_collection_t * treesequencetablecollection, tsk_id_t * wholepopulationsitesarray, tsk_id_t childnode, int totaltimesteps, double currenttimestep, bool isabsolute, int totalindividualgenomelength, double *gamete, double mutationeffectsize, int addNonNeutral)
 {
     tsk_id_t idofnewmutation;
 
@@ -36,7 +36,8 @@ void MutateGamete(int tskitstatus, int isburninphaseover,  tsk_table_collection_
     char derivedstate[400];
     sprintf(derivedstate, "%.11f", mutationeffectsize);
 
-    if (tskitstatus != 0){
+    // Only track non-neutral mutations when the addNonNeutral command line argument is turned on
+    if (tskitstatus != 0 && addNonNeutral != 0){
         if(isabsolute){
             if (isburninphaseover != 0){
                 idofnewmutation = tsk_mutation_table_add_row(&treesequencetablecollection->mutations, wholepopulationsitesarray[mutatedsite], childnode, TSK_NULL, ((double) totaltimesteps - currenttimestep), derivedstate, 12, NULL, 0);
