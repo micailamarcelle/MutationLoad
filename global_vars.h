@@ -11,7 +11,11 @@
 
 // Defines the frequency with which data is written to the raw data output file, in terms
 // of generations (i.e. 5 corresponds to recording data every 5 generations)
-#define WRITEFREQUENCY 10
+#define WRITEFREQUENCY 5
+
+// Defines the frequency with which the population should be re-normalized. May need to 
+// be adjusted based on particular parameter combination to prevent things from crashing
+#define RENORM_FREQUENCY 1000
 
 #define check_tsk_error(val)                                                            \
     if (val < 0) {                                                                      \
@@ -19,4 +23,5 @@
     }//error checking for tree sequence recording
 
 #endif // GLOBAL_VARS_H_INCLUDED
+
 
