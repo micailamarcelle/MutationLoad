@@ -7,6 +7,7 @@ all of the mutations that have taken place in that part of the genome.
 In particular, this fork/branch focuses on investigating distortions in the SFS under human-plausible parameters for the purposes of Micaila's in-progress paper. All relevant files for running the simulation and analyzing its outputs are stored in the folder SFS_Distortions_Code within this repository. A useful guide to the primary files used in analysis is given below:
 
 Figure Generation:
+
 For Figure 1:
 - Consists of two separate figures, both of which are generated via the UdSd_Scatterplot.py file. 
 - Unlike many of the other files, this one does not directly require any sort of input file. Rather, I’ve taken data compiled from a large number of runs (all of which I believe should be found in the spreadsheet linked below) and copied it directly into the Python file itself, so the data is pretty hard-coded. 
