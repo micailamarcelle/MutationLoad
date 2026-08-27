@@ -1,4 +1,5 @@
 **Overview**
+
 This is a fork of the Masel Lab's forward time simulation, designed for studying questions
 related to mutation load and demographic inference within population genetics. It simulates
 the genomes of individuals in a population over time by splitting the genome into discrete
