@@ -1,3 +1,4 @@
+**Overview**
 This is a fork of the Masel Lab's forward time simulation, designed for studying questions
 related to mutation load and demographic inference within population genetics. It simulates
 the genomes of individuals in a population over time by splitting the genome into discrete
@@ -6,7 +7,7 @@ all of the mutations that have taken place in that part of the genome.
 
 In particular, this fork/branch focuses on investigating distortions in the SFS under human-plausible parameters for the purposes of Micaila's in-progress paper. All relevant files for running the simulation and analyzing its outputs are stored in the folder SFS_Distortions_Code within this repository. A useful guide to the primary files used in analysis is given below:
 
-Figure Generation:
+**Figure Generation**
 
 For Figure 1:
 - Consists of two separate figures, both of which are generated via the UdSd_Scatterplot.py file. 
@@ -41,7 +42,7 @@ For Figure 5:
 - Rather than using the plots output by these runs of the script, I instead used the information spit out by dadi in the .out file corresponding to each run of the Python script. I took this data in each case from the replicate with the best consistent log likelihood (i.e. the replicate with the best log likelihood that appeared several times). The first two parameters output by dadi are the ones to pay attention to: the first corresponds to the ratio of the contemporary population size to the “ancient” population size estimated by dadi via the growth model, while the second corresponds to the scaled predicted duration of exponential growth, albeit in slightly strange units. I used the former value directly for Fig. 5A. For the latter with Fig. 5B, to convert it to the generations relevant to our simulation, I used a formula that Travis suggested: T (the second estimated parameter output by dadi) * Ne * 2.
 - This data was then added to the dadiParameterScatterplot.py script and plotted! 
 
-Python Files:
+**Python Files**
 - BlockComparisonPlot.py: Used to determine whether the number of linkage blocks used within different simulations has any impact on the plotted site frequency spectrum. From the runs I did (L values are still in this .py file) no clear variation was observed. 
 - CvijovicPlot.py: Uses the approach described by Cvijovic et al. to plot out the SFS curve predicted by their model relative to both the neutral curve and the scaled neutral curve for reduced Ne. Not used for final paper, but rather for developing understanding of how the equations within their model function
 - dadiParameterScatterplot.py: Used for Fig. 5 within the paper. Notably, the information is hard-coded after being taken from the corresponding simulations, since I ultimately found this to be most efficient with how the simulations are set up and how I was able to apply dadi to them. 
@@ -55,6 +56,6 @@ Python Files:
 - Ud_vs_Sd_Plot.py: Though this ultimately was not used in the framework of the paper, it was originally constructed in order to directly compare the SFS corresponding to varying increases in Ud vs. Sd. Ultimately, though, we didn’t find this to be a useful comparison, so it was scrapped in favor of the chosen figures. 
 
 
-Miscellaneous:
+**Miscellaneous**
 - Some useful data from runs I’ve already completed is stored in the spreadsheet linked here (https://docs.google.com/spreadsheets/d/1TS6t7WuL9kYSFh5H2ys_a2uIAnlPkbls0GBSE-ajk6A/edit?usp=sharing). The lines marked yellow are those that I ultimately used within the paper and actually got the mean variances for!
 - The four folders in the project other than dependencies (starting with “datafor_relative…”) are just the folders containing some of the main pieces of data I was playing around with in my project, particularly in the later stages. I left these since they may be useful to you!
